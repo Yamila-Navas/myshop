@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import sys
 from decouple import config
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -171,9 +172,11 @@ STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
 
 
 # Redis settings
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_DB = 1
+redis_url = urlparse(os.environ.get("REDIS_URL", "redis://redis:6379/0"))
+
+REDIS_HOST = redis_url.hostname  
+REDIS_PORT = redis_url.port      
+REDIS_DB   = int(redis_url.path.lstrip("/"))  
 
 
 # Seguridad producción
